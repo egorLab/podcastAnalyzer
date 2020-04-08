@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"podcastAnalyzer/parser/itunesBodies"
+	"podcastAnalyzer/parser/itunes/itunesBodies"
 	"strconv"
 	"time"
 )
 
 var myClient = &http.Client{Timeout: 10 * time.Second}
-
 
 func SearchUrlGenerator(item string) (string, bool) {
 	var searchString string
@@ -44,7 +43,6 @@ func Search(query string) []itunesBodies.ItunesSearchResultsItem {
 	return results.Results
 }
 
-
 func FilterOnlyPodcasts(results itunesBodies.ItunesSearchResults) itunesBodies.ItunesSearchResults {
 	// from https://github.com/ko/feedparser/blob/ecfd72b7f65820490fb93d5efad154aea216ab0f/search.go
 
@@ -76,4 +74,3 @@ func GetJsonResultsFromURL(url string, target interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(target)
 }
-

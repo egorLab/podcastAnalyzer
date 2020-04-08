@@ -1,0 +1,25 @@
+create table podcasts (
+   podcast_id integer primary key,
+   rss_link text,
+   last_update TIMESTAMP not null,
+   title text
+);
+
+
+create table itunes_ID (
+   podcast_id integer primary key,
+   itunes_id integer not null,
+   last_update TIMESTAMP not null
+);
+
+
+create table sources (
+   source_id integer primary key,
+   name text
+);
+
+
+create table categories (
+   category_id integer primary key,
+   name text
+);

@@ -12,10 +12,10 @@ type ItunesSearchResultsItem struct {
 	ArtworkURL600          string   `json:"artworkUrl600"`
 	CollectionCensoredName string   `json:"collectionCensoredName"`
 	CollectionExplicitness string   `json:"collectionExplicitness"`
-	CollectionHdPrice      float32      `json:"collectionHdPrice"`
+	CollectionHdPrice      float32  `json:"collectionHdPrice"`
 	CollectionID           int      `json:"collectionId"`
 	CollectionName         string   `json:"collectionName"`
-	CollectionPrice        float32      `json:"collectionPrice"`
+	CollectionPrice        float32  `json:"collectionPrice"`
 	CollectionViewURL      string   `json:"collectionViewUrl"`
 	ContentAdvisoryRating  string   `json:"contentAdvisoryRating"`
 	Country                string   `json:"country"`
@@ -29,16 +29,15 @@ type ItunesSearchResultsItem struct {
 	TrackCensoredName      string   `json:"trackCensoredName"`
 	TrackCount             int      `json:"trackCount"`
 	TrackExplicitness      string   `json:"trackExplicitness"`
-	TrackHdPrice           float32      `json:"trackHdPrice"`
-	TrackHdRentalPrice     float32      `json:"trackHdRentalPrice"`
+	TrackHdPrice           float32  `json:"trackHdPrice"`
+	TrackHdRentalPrice     float32  `json:"trackHdRentalPrice"`
 	TrackID                int      `json:"trackId"`
 	TrackName              string   `json:"trackName"`
-	TrackPrice             float32      `json:"trackPrice"`
-	TrackRentalPrice       float32      `json:"trackRentalPrice"`
+	TrackPrice             float32  `json:"trackPrice"`
+	TrackRentalPrice       float32  `json:"trackRentalPrice"`
 	TrackViewURL           string   `json:"trackViewUrl"`
 	WrapperType            string   `json:"wrapperType"`
 }
-
 
 type ItunesSearchResults struct {
 	ResultCount int                       `json:"resultCount"`

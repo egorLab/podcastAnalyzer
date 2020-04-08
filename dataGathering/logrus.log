@@ -1,0 +1,1 @@
+{"details":"INSERT INTO podcasts (podcast_id, rss_link, last_update, title) VALUES ($1, $2, $3, $4)","err":"pq: duplicate key value violates unique constraint \"podcasts_pkey\"","level":"error","msg":"","time":"08 Apr 20 21:36 CEST"}
