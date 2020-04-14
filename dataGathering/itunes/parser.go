@@ -7,7 +7,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"podcastAnalyzer/parser/itunes/itunesPodcastSearch"
 	"podcastAnalyzer/parser/logging"
-	"podcastAnalyzer/parser/models/psql"
+	"podcastAnalyzer/parser/models/clickhouse"
 	"strings"
 	"time"
 )
@@ -57,15 +57,29 @@ func getPodcastById(IdRequested string) *gofeed.Feed {
 func main() {
 	logging.InitLogger(false)
 
-	c := psql.NewPsqlConnection()
-	extractedFeed := getPodcastById("360084272")
-	t, _ := time.Parse(time.RFC1123Z, "Tue, 07 Apr 2020 23:57:34 +0000")
-	p := psql.Podcast{
-		PodcastID:  36008422,
-		RSSLink:    extractedFeed.Link,
-		LastUpdate: t,
-		Title:      extractedFeed.Title,
+	//c := psql.NewPsqlConnection()
+	//extractedFeed := getPodcastById("360084272")
+	//t, _ := time.Parse(time.RFC1123Z, "Tue, 07 Apr 2020 23:57:34 +0000")
+	//p := psql.Podcast{
+	//	PodcastID:  36008422,
+	//	RSSLink:    extractedFeed.Link,
+	//	LastUpdate: t,
+	//	Title:      extractedFeed.Title,
+	//}
+	//c.InsertIntoTable("podcasts", p)
+	p := clickhouse.Podcast{
+		PodcastID:         0,
+		MainCategory:      0,
+		AllMainCategories: nil,
+		Title:             "",
+		ListensCount:      0,
+		CommentsCount:     0,
+		Rating:            0,
+		EpisodesCount:     0,
+		Timestamp:         time.Time{},
+		Source:            0,
 	}
-	c.InsertIntoTable("podcasts", p)
+	c := clickhouse.NewClickhouseConnection()
+	c.InsertIntoTable("Podcasts", p)
 
 }

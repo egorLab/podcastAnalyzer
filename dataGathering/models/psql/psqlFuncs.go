@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"podcastAnalyzer/parser"
 	"podcastAnalyzer/parser/logging"
-	"reflect"
-	"strconv"
 )
 
-const (
+const ( // TODO: put in config
 	host     = "localhost"
 	port     = 5432
 	user     = "dev"
@@ -40,10 +39,10 @@ func NewPsqlConnection() InstancePsql {
 }
 
 func (psql *InstancePsql) InsertIntoTable(tablename string, entry interface{}) {
-	mapping := TablesMapping[tablename]
-	fieldsToFill, wildcard := getFieldsAndWildcards(entry)
+	mapping := dataGathering.PostgresTablesMapping[tablename]
+	fieldsToFill, wildcard := dataGathering.GetFieldsAndWildcards(entry)
 
-	sqlStatement := "INSERT INTO " + tablename + " " + mapping.columnNames + " VALUES " + wildcard
+	sqlStatement := "INSERT INTO " + tablename + " " + mapping.ColumnNames + " VALUES " + wildcard
 
 	_, err := psql.DB.Exec(sqlStatement, fieldsToFill...)
 
@@ -56,16 +55,16 @@ func (psql *InstancePsql) InsertIntoTable(tablename string, entry interface{}) {
 	defer psql.DB.Close()
 }
 
-func (psql *InstancePsql) GetRowFromTableWithWhere(tablename string, entry Request) interface{} {
-	mapping := TablesMapping[tablename]
-	sqlStatement := "SELECT * FROM "+tablename+
-					" WHERE "+fmt.Sprintf("%v", entry.Field)+" = " + fmt.Sprintf("%v", entry.Value)
+func (psql *InstancePsql) GetRowFromTableWithWhere(tablename string, entry dataGathering.Request) interface{} {
+	mapping := dataGathering.PostgresTablesMapping[tablename]
+	sqlStatement := "SELECT * FROM " + tablename +
+		" WHERE " + fmt.Sprintf("%v", entry.Field) + " = " + fmt.Sprintf("%v", entry.Value)
 
 	row := psql.DB.QueryRowx("SELECT * FROM "+tablename+
-									" WHERE "+fmt.Sprintf("%v ", entry.Field)+"= $1 ",
-									entry.Value)
+		" WHERE "+fmt.Sprintf("%v ", entry.Field)+"= $1 ",
+		entry.Value)
 
-	entity := mapping.entity
+	entity := mapping.Entity
 	err := row.StructScan(entity)
 	if err != nil {
 		logging.CheckErr(err, sqlStatement)
@@ -76,21 +75,4 @@ func (psql *InstancePsql) GetRowFromTableWithWhere(tablename string, entry Reque
 	defer psql.DB.Close()
 
 	return entity
-}
-
-func getFieldsAndWildcards(entry interface{}) (fields []interface{}, wildcardStr string) {
-	// create interface to pass and wildcards
-	wildcard := "("
-	s := reflect.ValueOf(entry)
-	fieldsToFill := make([]interface{}, s.NumField())
-	for i := 0; i < s.NumField(); i++ {
-		fieldsToFill[i] = s.Field(i).Interface()
-		wildcard += "$" + strconv.Itoa(i+1)
-		if i != s.NumField()-1 {
-			wildcard += ", " // TODO better way to construct statement?
-		}
-	}
-	wildcard += ")"
-
-	return fieldsToFill, wildcard
 }

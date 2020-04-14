@@ -3,7 +3,7 @@ package psql
 import "time"
 
 type Category struct {
-	CategoryId int `db:"category_id"`
+	CategoryID int    `db:"category_id"`
 	Name       string `db:"name"`
 }
 
