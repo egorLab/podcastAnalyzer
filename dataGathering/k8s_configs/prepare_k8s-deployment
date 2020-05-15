@@ -1,0 +1,5 @@
+#! /bin/sh
+
+minikube start
+
+kubectl apply -f k8s-deployment.yml

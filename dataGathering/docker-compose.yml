@@ -1,0 +1,15 @@
+version: '2.2'
+
+services:
+  psql:
+    build:
+      context: psql
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      - parser
+  parser:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: on-failure

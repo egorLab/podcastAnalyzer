@@ -1,6 +1,9 @@
 package psql
 
-import "time"
+import (
+	"podcastAnalyzer/parser/misc"
+	"time"
+)
 
 type Category struct {
 	CategoryID int    `db:"category_id"`
@@ -23,4 +26,24 @@ type Podcast struct {
 	RSSLink    string
 	LastUpdate time.Time
 	Title      string
+}
+
+
+var PostgresTablesMapping = map[string]misc.TableMapper{
+	"sources": {
+		ColumnNames: "(source_id, name)",
+		Entity:      &Source{},
+	},
+	"categories": {
+		ColumnNames: "(category_id, name)",
+		Entity:      &Category{},
+	},
+	"podcasts": {
+		ColumnNames: "(podcast_id, rss_link, last_update, title)",
+		Entity:      &Podcast{},
+	},
+	"itunes_ID": {
+		ColumnNames: "(podcast_id, itunes_id, last_update)",
+		Entity:      &ItunesID{},
+	},
 }

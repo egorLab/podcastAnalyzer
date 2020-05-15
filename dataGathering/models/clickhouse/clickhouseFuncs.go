@@ -5,8 +5,8 @@ import (
 	_ "github.com/ClickHouse/clickhouse-go"
 	"github.com/jmoiron/sqlx"
 	"log"
-	"podcastAnalyzer/parser"
 	"podcastAnalyzer/parser/logging"
+	"podcastAnalyzer/parser/misc"
 )
 
 type InstanceClickhouse struct {
@@ -30,17 +30,22 @@ func NewClickhouseConnection() InstanceClickhouse {
 }
 
 func (clickhouse *InstanceClickhouse) InsertIntoTable(tablename string, entry interface{}) {
-	mapping := dataGathering.ClickhouseTablesMapping[tablename]
-	fieldsToFill, wildcard := dataGathering.GetFieldsAndWildcards(entry)
+	mapping := ClickhouseTablesMapping[tablename]
+	fieldsToFill, wildcard := misc.GetFieldsAndWildcards(entry)
+	tx, err := clickhouse.DB.Begin()
+	logging.CheckErr(err, "Can't start transaction clickhouse")
 
 	sqlStatement := "INSERT INTO " + tablename + " " + mapping.ColumnNames + " VALUES " + wildcard
+	stmt, err := tx.Prepare(sqlStatement)
+	logging.CheckErr(err, "Can't prepare sqlStatement clickhouse")
 
-	_, err := clickhouse.DB.Exec(sqlStatement, fieldsToFill...)
+	_, err = stmt.Exec(fieldsToFill...)
+	logging.CheckErr(tx.Commit(), "Can't commit clickhouse")
 
 	if err != nil {
 		logging.CheckErr(err, sqlStatement)
 	} else {
-		logging.Logger.Info("Insert sent: ", fieldsToFill)
+		logging.Logger.Info("Insert sent: ", stmt)
 	}
 
 	defer clickhouse.DB.Close()

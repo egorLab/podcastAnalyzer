@@ -22,8 +22,8 @@ func SearchUrlGenerator(item string) (string, bool) {
 		searchString = "search?term=" + item
 	}
 
-	return "https://itunes.apple.com/" + searchString + "&entity=podcast", isIdBasedSearch
-}
+	return "https://itunes.apple.com/" + searchString + "&entity=podcast&limit=2&offset=2", isIdBasedSearch
+} //https://itunes.apple.com/search?genreId=1402&entity=podcast&limit=2&offset=2
 
 func Search(query string) []itunesBodies.ItunesSearchResultsItem {
 	var results itunesBodies.ItunesSearchResults

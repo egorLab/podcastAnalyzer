@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"podcastAnalyzer/parser"
 	"podcastAnalyzer/parser/logging"
+	"podcastAnalyzer/parser/misc"
 )
 
 const ( // TODO: put in config
@@ -39,8 +39,8 @@ func NewPsqlConnection() InstancePsql {
 }
 
 func (psql *InstancePsql) InsertIntoTable(tablename string, entry interface{}) {
-	mapping := dataGathering.PostgresTablesMapping[tablename]
-	fieldsToFill, wildcard := dataGathering.GetFieldsAndWildcards(entry)
+	mapping := PostgresTablesMapping[tablename]
+	fieldsToFill, wildcard := misc.GetFieldsAndWildcards(entry)
 
 	sqlStatement := "INSERT INTO " + tablename + " " + mapping.ColumnNames + " VALUES " + wildcard
 
@@ -55,8 +55,8 @@ func (psql *InstancePsql) InsertIntoTable(tablename string, entry interface{}) {
 	defer psql.DB.Close()
 }
 
-func (psql *InstancePsql) GetRowFromTableWithWhere(tablename string, entry dataGathering.Request) interface{} {
-	mapping := dataGathering.PostgresTablesMapping[tablename]
+func (psql *InstancePsql) GetRowFromTableWithWhere(tablename string, entry misc.Request) interface{} {
+	mapping := PostgresTablesMapping[tablename]
 	sqlStatement := "SELECT * FROM " + tablename +
 		" WHERE " + fmt.Sprintf("%v", entry.Field) + " = " + fmt.Sprintf("%v", entry.Value)
 

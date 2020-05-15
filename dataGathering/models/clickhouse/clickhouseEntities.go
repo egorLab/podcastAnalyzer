@@ -1,6 +1,24 @@
 package clickhouse
 
-import "time"
+import (
+	"podcastAnalyzer/parser/misc"
+	"time"
+)
+import _ "podcastAnalyzer/parser/misc"
+
+var ClickhouseTablesMapping = map[string]misc.TableMapper{
+	"Podcasts": {
+		ColumnNames: "(podcast_id, main_category, all_main_categories, title, " +
+			"listens_count, comments_count, rating, episodes_count, timestamp, source)",
+		Entity: &Podcast{},
+	},
+	"Episodes": {
+		ColumnNames: "(podcast_id, episode_id, description, title, " +
+			"length, listens_count, comments_count, trending_words, rating, " +
+			"publication_date, timestamp, explicit, is_trailer, timecodes_count, parts_count, source)",
+		Entity: &Episode{},
+	},
+}
 
 type Podcast struct {
 	PodcastID         uint64    `db:"podcast_id"`
@@ -33,3 +51,5 @@ type Episode struct {
 	PartsCount      uint64    `db:"parts_count"`
 	Source          uint8     `db:"source"`
 }
+
+
